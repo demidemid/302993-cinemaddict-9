@@ -1,7 +1,7 @@
 # Личный проект «Киноман» [![Build status][travis-image]][travis-url]
 
 * Студент: [Demid Miroshnichenko](https://up.htmlacademy.ru/ecmascript/9/user/302993).
-* Наставник: `Неизвестно`.
+* Наставник: [Александр Мастеров](https://up.htmlacademy.ru/ecmascript/9/user/912463).
 
 ---
 
