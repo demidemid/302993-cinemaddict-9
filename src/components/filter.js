@@ -4,9 +4,10 @@ export const filterElements = [
   {name: `Favorites`, count: 8}
 ];
 
-export const createFilterTemplate = ({name, count = 0} = {}) => {
-  const id = name.toLowerCase();
-  return `<a href="${`#` + id}" class="main-navigation__item">
+export const getFilterTemplate = ({name, count = 0} = {}) => {
+  const createUrlTemplate = () => `#` + name.toLowerCase();
+
+  return `<a href="${createUrlTemplate}" class="main-navigation__item">
     ${name}
     <span class="main-navigation__item-count">${count}</span>
   </a>`;

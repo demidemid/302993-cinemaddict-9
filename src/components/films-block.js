@@ -1,11 +1,3 @@
-import {createFilmCardTemplate} from './film-card';
-import {createFilmDetailsTemplate} from './film-details';
-
-export {
-  createFilmCardTemplate,
-  createFilmDetailsTemplate,
-};
-
 export const getFilmsBlockTemplate = () => {
   return `<section class="films">
   <section class="films-list">
