@@ -1,4 +1,5 @@
-import {filterElements, getFilterTemplate} from './filter';
+import {filterElements} from '../data/mock';
+import {getFilterTemplate} from './filter';
 
 export const getMainNavigation = () => {
   return `<nav class="main-navigation">
