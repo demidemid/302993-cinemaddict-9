@@ -1,6 +1,6 @@
 import {DESCRIPTION, CREDITS} from '../data/data';
 
-export const getFilmDetailsTemplate = ({title, imageFileName, raiting, credits, duration, genres, CommentCountPerFilm}) => `
+export const getFilmDetailsTemplate = ({title, imageFileName, raiting, credits, duration, genres, totalComments}) => `
 <div class="film-details__info-wrap">
   <div class="film-details__poster">
     <img class="film-details__poster-img" src="./images/posters/${imageFileName}" alt="">
@@ -65,8 +65,8 @@ export const getFilmDetailsTemplate = ({title, imageFileName, raiting, credits, 
 </div>
 <div class="form-details__bottom-container">
 	<div class="film-details__comments-wrap">
-		<h3 class="film-details__comments-title">${CommentCountPerFilm === 1 ? `Comment` : `Comments`}
-			<span class="film-details__comments-count">${CommentCountPerFilm}</span></h3>
+		<h3 class="film-details__comments-title">${totalComments === 1 ? `Comment` : `Comments`}
+			<span class="film-details__comments-count">${totalComments}</span></h3>
 		<ul class="film-details__comments-list">
 
 		</ul>

@@ -104,7 +104,7 @@ renderCards(topRatedCards, filmTopRatedList, 0, TOP_COUNT);
 // most commented
 
 const filmMostCommentedList = document.querySelector(`.films-list__container--most-commented`);
-const mostCommentedCards = films.sort((a, b) => b.CommentCountPerFilm - a.CommentCountPerFilm);
+const mostCommentedCards = films.sort((a, b) => b.totalComments - a.totalComments);
 renderCards(mostCommentedCards, filmMostCommentedList, 0, TOP_COUNT);
 
 // TODO: пока что у top rated и most commented простая сортировка без дополнительных условий, позже доделаю в соответствие с ТХ

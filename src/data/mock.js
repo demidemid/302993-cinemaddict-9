@@ -29,7 +29,7 @@ export const getData = () => ({
   duration: getRandomItem(DURATIONS),
   genres: new Set(getRandomlyReducedArray(GENRES, Math.round(Math.random() * ItemCountPerScope.MAX))),
   description: new Set(getRandomlyReducedArray(DESCRIPTION, getRandomInt(ItemCountPerScope.MIN, ItemCountPerScope.MAX))),
-  CommentCountPerFilm: getRandomInt(CommentCountPerFilm.MIN, CommentCountPerFilm.MAX),
+  totalComments: getRandomInt(CommentCountPerFilm.MIN, CommentCountPerFilm.MAX),
   intoWatchList: getRandomBool(),
   isWatched: getRandomBool(),
   isFavorite: getRandomBool(),
@@ -50,7 +50,7 @@ export const getCommentsDate = () => ({
 });
 
 export const films = new Array(CardDisplay.TOTAL).fill(``).map(getData);
-export const comments = new Array(films[0].CommentCountPerFilm).fill(``).map(getCommentsDate);
+export const comments = new Array(films[0].totalComments).fill(``).map(getCommentsDate);
 
 const filterStats = films.reduce((stats, {intoWatchList, isWatched, isFavorite}) => {
   if (intoWatchList) {
