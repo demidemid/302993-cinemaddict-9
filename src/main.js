@@ -12,11 +12,13 @@ import {
 } from './components/';
 
 import {render} from './render';
-import {cards, comments, cardDisplay, TOP_COUNT} from "./data/mock";
+import {CardDisplay} from './data/enums';
+import {TOP_COUNT} from './data/consts';
+import {films, comments} from "./data/mock";
 
 const cardStat = {
   quantityCounter: 0,
-  leftToShow: cards.length,
+  leftToShow: films.length,
 
   updateTaskStat(quantity) {
     this.quantityCounter += quantity;
@@ -43,21 +45,21 @@ const renderCards = (arr, place, start, end) => {
 };
 
 const getTaskQuantityParam = () => {
-  let quantity = cardStat.leftToShow > cardDisplay.PER_PAGE ? cardDisplay.PER_PAGE : cardStat.leftToShow;
+  let quantity = cardStat.leftToShow > CardDisplay.PER_PAGE ? CardDisplay.PER_PAGE : cardStat.leftToShow;
 
   cardStat.updateTaskStat(quantity);
   return quantity;
 };
 
-renderCards(cards, filmAllList, cardStat.quantityCounter, getTaskQuantityParam());
+renderCards(films, filmAllList, cardStat.quantityCounter, getTaskQuantityParam());
 
 // pop-up deatails
 
 const onCommentLinkClick = () => {
-  render(body, getFilmPopupTemplate);
+  render(body, getFilmPopupTemplate());
 
   const popupInfo = body.querySelector(`.form-details__top-container`);
-  render(popupInfo, cards.slice(0, 1).map(getFilmDetailsTemplate));
+  render(popupInfo, getFilmDetailsTemplate(films[0]));
 
   const popupDetailBlock = body.querySelector(`.film-details__comments-list`);
   const popupCloseButton = body.querySelector(`.film-details__close-btn`);
@@ -90,19 +92,19 @@ if (cardStat.leftToShow > 0) {
   };
 
   const showMoreButton = document.querySelector(`.films-list__show-more`);
-  showMoreButton.addEventListener(`click`, onShowMoreButtonClick);
+  showMoreButton.addEventListener(`click`, onShowMoreButtonClick, {once: true});
 }
 
 // top rated
 
 const filmTopRatedList = document.querySelector(`.films-list__container--top-rated`);
-const topRatedCards = cards.sort((a, b) => b.raiting - a.raiting);
+const topRatedCards = films.sort((a, b) => b.raiting - a.raiting);
 renderCards(topRatedCards, filmTopRatedList, 0, TOP_COUNT);
 
 // most commented
 
 const filmMostCommentedList = document.querySelector(`.films-list__container--most-commented`);
-const mostCommentedCards = cards.sort((a, b) => b.commentsCount - a.commentsCount);
+const mostCommentedCards = films.sort((a, b) => b.CommentCountPerFilm - a.CommentCountPerFilm);
 renderCards(mostCommentedCards, filmMostCommentedList, 0, TOP_COUNT);
 
 // TODO: пока что у top rated и most commented простая сортировка без дополнительных условий, позже доделаю в соответствие с ТХ

@@ -1,8 +1,9 @@
-export const getFilterTemplate = ({name, count = 0} = {}) => {
-  const createUrlTemplate = () => `#` + name.toLowerCase();
+const createUrlAnchor = (name) => `#` + name.toLowerCase();
 
-  return `<a href="${createUrlTemplate}" class="main-navigation__item">
+export const getFilterTemplate = ({name, count = 0}) => {
+  return `
+  <a href="${createUrlAnchor(name)}" class="main-navigation__item">
     ${name}
     <span class="main-navigation__item-count">${count}</span>
-  </a>`;
+  </a>`.trim();
 };
