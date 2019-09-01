@@ -14,6 +14,6 @@ export const CommentCountPerFilm = {
 };
 
 export const CardDisplay = {
-  TOTAL: 5,
+  TOTAL: 6,
   PER_PAGE: 5,
 };

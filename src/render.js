@@ -1,3 +1,3 @@
-export const render = (container, template, place = `beforeend`) => {
+export const render1 = (container, template, place = `beforeend`) => {
   container.insertAdjacentHTML(place, template);
 };

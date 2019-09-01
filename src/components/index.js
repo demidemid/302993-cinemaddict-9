@@ -1,23 +1,21 @@
-import {getSearchTemplate} from './search';
-import {getMainNavigation} from './main-navigation';
-import {getFilmsBlockTemplate} from './films-block';
-import {getUserProfileTemplate} from './user-profile';
-import {getSortItemsTemplate} from './sort';
-import {getShomMoreButtonTemplate} from './show-more';
-import {getFilmCardTemplate} from './film-card';
-import {getFilmPopupTemplate} from './film-popup';
-import {getFilmDetailsTemplate} from './film-details';
-import {getFilmCommentsTemplate} from './film-comments';
+import {Search} from './search';
+import {MainNavigation} from './main-navigation';
+import {Filter} from './filter';
+import {FilmsBlock} from './films-block';
+import {UserProfile} from './user-profile';
+import {SortFilms} from './sort';
+import {ShowMoreButton} from './show-more';
+import {FilmCard} from './film-card';
+import {FilmDetails} from './film-details';
 
 export {
-  getSearchTemplate,
-  getMainNavigation,
-  getFilmsBlockTemplate,
-  getUserProfileTemplate,
-  getSortItemsTemplate,
-  getShomMoreButtonTemplate,
-  getFilmCardTemplate,
-  getFilmPopupTemplate,
-  getFilmDetailsTemplate,
-  getFilmCommentsTemplate
+  Search,
+  MainNavigation,
+  Filter,
+  FilmsBlock,
+  UserProfile,
+  SortFilms,
+  ShowMoreButton,
+  FilmCard,
+  FilmDetails,
 };
