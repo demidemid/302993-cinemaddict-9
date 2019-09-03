@@ -33,6 +33,7 @@ export default class FilmsBlock {
         <h2 class="films-list__title">Most commented</h2>
         <div class="films-list__container films-list__container--most-commented"></div>
       </section>` : ``}
-    </section>`.trim();
+    </section>
+    `.trim();
   }
 }
