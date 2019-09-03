@@ -1,7 +1,7 @@
 import {DESCRIPTION, CREDITS} from '../data/data';
 import {createElement} from "../utils";
 
-export class FilmDetails {
+export default class FilmDetails {
   constructor({title, imageFileName, raiting, credits, duration, genres, comments}) {
     this._title = title;
     this._imageFileName = imageFileName;
@@ -93,8 +93,8 @@ export class FilmDetails {
       </div>
       <div class="form-details__bottom-container">
         <div class="film-details__comments-wrap">
-          <h3 class="film-details__comments-title">${this._comments.size === 1 ? `Comment` : `Comments`}
-            <span class="film-details__comments-count">${this._comments.size}</span></h3>
+          <h3 class="film-details__comments-title">${this._comments.length === 1 ? `Comment` : `Comments`}
+            <span class="film-details__comments-count">${this._comments.length}</span></h3>
           <ul class="film-details__comments-list">
             ${Array.from(this._comments).map(({iconReactionImage, commentTexts, userName, date}) => `
             <li class="film-details__comment">
@@ -122,7 +122,7 @@ export class FilmDetails {
             </label>
 
             <div class="film-details__emoji-list">
-              ${Array.from(CREDITS.iconReactionImage).map((file) => `
+              ${CREDITS.iconReactionImage.map((file) => `
               <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile"
                 value="sleeping">
               <label class="film-details__emoji-label" for="emoji-smile">

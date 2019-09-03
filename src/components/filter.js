@@ -1,6 +1,9 @@
 import {createElement} from "../utils";
 
-export class Filter {
+const createUrlAnchor = (name) => `#` + name.toLowerCase();
+const normalizeName = (name) => name === `All` ? `All Movies` : name;
+
+export default class Filter {
   constructor({name, count = 0}) {
     this._name = name;
     this._count = count;
@@ -16,10 +19,8 @@ export class Filter {
   }
 
   getTemplate() {
-    const createUrlAnchor = (name) => `#` + name.toLowerCase();
-    const createName = (name) => name === `All` ? `All Movies` : name;
     return `
-    <a href="${createUrlAnchor(this._name)}" class="main-navigation__item ${this._name === `All` ? `main-navigation__item--active` : ``}">${createName(this._name)}
+    <a href="${createUrlAnchor(this._name)}" class="main-navigation__item ${this._name === `All` ? `main-navigation__item--active` : ``}">${normalizeName(this._name)}
     ${this._name !== `All` ? `<span class="main-navigation__item-count">${this._count}</span>` : ``}</a>
     `.trim();
   }

@@ -10,10 +10,12 @@ import {
   FilmDetails,
 } from './components/';
 
-import {render, unrender, Position} from './utils';
+import {render, unrender, Position, isEscapeKey} from './utils';
 import {CardDisplay} from './data/enums';
 import {TOP_COUNT} from './data/consts';
 import {films, getData, filterElements} from "./data/mock";
+
+const notEmpty = CardDisplay.TOTAL > 0;
 
 const cardStat = {
   quantityCounter: 0,
@@ -44,7 +46,7 @@ const renderFilter = (filterMock) => {
   render(mainNav, filter.getElement(), Position.AFTERBEGIN);
 };
 
-filterElements.reverse().forEach((filterMock) => renderFilter(filterMock));
+filterElements.reverse().forEach(renderFilter);
 
 // SORT FILMS
 
@@ -52,7 +54,7 @@ render(main, new SortFilms().getElement(), Position.BEFOREEND);
 
 // FILM ALL LIST BLOCK
 
-render(main, new FilmsBlock().getElement(), Position.BEFOREEND);
+render(main, new FilmsBlock(notEmpty).getElement(), Position.BEFOREEND);
 
 const filmList = main.querySelector(`.films-list`);
 const filmAllList = filmList.querySelector(`.films-list__container--main`);
@@ -71,43 +73,46 @@ const getTaskQuantityParam = () => {
 const renderFilm = (place, filmMock) => {
   const film = new FilmCard(filmMock);
   const filmDetails = new FilmDetails(filmMock);
+  const filmElement = film.getElement();
+  const filmDetailsElement = filmDetails.getElement();
+  const filmDetailsElementTextarea = filmDetailsElement.querySelector(`textarea`);
 
-  const onEscKeyDown = (evt) => {
-    if (evt.key === `Escape` || evt.key === `Esc`) {
-      place.replaceChild(film.getElement(), filmDetails.getElement());
+  const onEscKeyDown = () => {
+    if (isEscapeKey) {
+      place.replaceChild(filmElement, filmDetailsElement);
       document.removeEventListener(`keydown`, onEscKeyDown);
     }
   };
 
-  film.getElement()
+  filmElement
     .querySelectorAll(`.film-card__comments, .film-card__poster, .film-card__title`)
     .forEach(
         (element) => {
           element.addEventListener(`click`, () => {
-            place.replaceChild(filmDetails.getElement(), film.getElement());
+            place.replaceChild(filmDetailsElement, filmElement);
             document.addEventListener(`keydown`, onEscKeyDown);
           });
         }
     );
 
-  filmDetails.getElement().querySelector(`textarea`)
+  filmDetailsElementTextarea
     .addEventListener(`focus`, () => {
       document.removeEventListener(`keydown`, onEscKeyDown);
     });
 
-  filmDetails.getElement().querySelector(`textarea`)
+  filmDetailsElementTextarea
     .addEventListener(`blur`, () => {
       document.addEventListener(`keydown`, onEscKeyDown);
     });
 
-  filmDetails.getElement()
+  filmDetailsElement
     .querySelector(`.film-details__close-btn`)
     .addEventListener(`click`, () => {
-      place.replaceChild(film.getElement(), filmDetails.getElement());
+      place.replaceChild(filmElement, filmDetailsElement);
       document.removeEventListener(`keydown`, onEscKeyDown);
     });
 
-  render(place, film.getElement(), Position.BEFOREEND);
+  render(place, filmElement, Position.BEFOREEND);
 };
 
 const filmMocks = new Array(CardDisplay.TOTAL)
@@ -145,5 +150,5 @@ renderAdditionFilmCards(filmTopRatedList, topRatedCards, 0, TOP_COUNT);
 // MOST COMMENTED BLOCK
 
 const filmMostCommentedList = document.querySelector(`.films-list__container--most-commented`);
-const mostCommentedCards = filmMocks.sort((a, b) => b.comments.size - a.comments.size);
+const mostCommentedCards = filmMocks.sort((a, b) => b.comments.length - a.comments.length);
 renderAdditionFilmCards(filmMostCommentedList, mostCommentedCards, 0, TOP_COUNT);

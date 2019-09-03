@@ -1,6 +1,6 @@
 import {createElement} from "../utils";
 
-export class SortFilms {
+export default class SortFilms {
   constructor() {
     this._element = null;
   }

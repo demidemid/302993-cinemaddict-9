@@ -37,3 +37,11 @@ export const unrender = (element) => {
     element.remove();
   }
 };
+
+const Key = {
+  ESCAPE: `Escape`,
+  ESCAPE_IE: `Esc`,
+};
+
+export const isEscapeKey = ({key}) =>
+  key === Key.ESCAPE || key === Key.ESCAPE_IE;

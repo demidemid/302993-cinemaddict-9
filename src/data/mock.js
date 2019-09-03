@@ -39,7 +39,7 @@ export const getData = () => ({
     countries: getRandomItem(CREDITS.countries),
     ageRaiting: getRandomItem(CREDITS.ageRaiting),
   },
-  comments: new Set(new Array(getRandomInt(CommentCountPerFilm.MIN, CommentCountPerFilm.MAX)).fill(``).map(getCommentsDate))
+  comments: new Array(getRandomInt(CommentCountPerFilm.MIN, CommentCountPerFilm.MAX)).fill(``).map(getCommentsDate)
 });
 
 export const getCommentsDate = () => ({
@@ -50,8 +50,6 @@ export const getCommentsDate = () => ({
 });
 
 export const films = new Array(CardDisplay.TOTAL).fill(``).map(getData);
-
-// console.log(films);
 
 
 const filterStats = films.reduce((stats, {intoWatchList, isWatched, isFavorite}) => {
