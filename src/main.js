@@ -1,20 +1,21 @@
 import {
-  getSearchTemplate,
-  getMainNavigation,
-  getFilmsBlockTemplate,
-  getUserProfileTemplate,
-  getSortItemsTemplate,
-  getShomMoreButtonTemplate,
-  getFilmCardTemplate,
-  getFilmPopupTemplate,
-  getFilmDetailsTemplate,
-  getFilmCommentsTemplate,
+  Search,
+  MainNavigation,
+  FilmsBlock,
+  UserProfile,
+  Filter,
+  SortFilms,
+  ShowMoreButton,
+  FilmCard,
+  FilmDetails,
 } from './components/';
 
-import {render} from './render';
+import {render, unrender, Position, isEscapeKey} from './utils';
 import {CardDisplay} from './data/enums';
 import {TOP_COUNT} from './data/consts';
-import {films, comments} from "./data/mock";
+import {films, getData, filterElements} from "./data/mock";
+
+const notEmpty = CardDisplay.TOTAL > 0;
 
 const cardStat = {
   quantityCounter: 0,
@@ -30,18 +31,36 @@ const body = document.querySelector(`body`);
 const header = body.querySelector(`.header`);
 const main = body.querySelector(`.main`);
 
-render(header, getSearchTemplate());
-render(header, getUserProfileTemplate());
+// SEARCH & USER PROFILE
 
-render(main, getMainNavigation());
-render(main, getSortItemsTemplate());
-render(main, getFilmsBlockTemplate());
+render(header, new Search().getElement(), Position.BEFOREEND);
+render(header, new UserProfile().getElement(), Position.BEFOREEND);
+
+// MAIN NAVIGATION & FILTRES
+
+render(main, new MainNavigation().getElement(), Position.BEFOREEND);
+const mainNav = main.querySelector(`.main-navigation`);
+
+const renderFilter = (filterMock) => {
+  const filter = new Filter(filterMock);
+  render(mainNav, filter.getElement(), Position.AFTERBEGIN);
+};
+
+filterElements.reverse().forEach(renderFilter);
+
+// SORT FILMS
+
+render(main, new SortFilms().getElement(), Position.BEFOREEND);
+
+// FILM ALL LIST BLOCK
+
+render(main, new FilmsBlock(notEmpty).getElement(), Position.BEFOREEND);
 
 const filmList = main.querySelector(`.films-list`);
 const filmAllList = filmList.querySelector(`.films-list__container--main`);
 
-const renderCards = (arr, place, start, end) => {
-  render(place, arr.slice(start, end).map(getFilmCardTemplate).join(``));
+const renderAdditionFilmCards = (place, arr, start, end) => {
+  arr.slice(start, end).forEach((filmMock) => renderFilm(place, filmMock));
 };
 
 const getTaskQuantityParam = () => {
@@ -51,43 +70,68 @@ const getTaskQuantityParam = () => {
   return quantity;
 };
 
-renderCards(films, filmAllList, cardStat.quantityCounter, getTaskQuantityParam());
+const renderFilm = (place, filmMock) => {
+  const film = new FilmCard(filmMock);
+  const filmDetails = new FilmDetails(filmMock);
+  const filmElement = film.getElement();
+  const filmDetailsElement = filmDetails.getElement();
+  const filmDetailsElementTextarea = filmDetailsElement.querySelector(`textarea`);
 
-// pop-up deatails
-
-const onCommentLinkClick = () => {
-  render(body, getFilmPopupTemplate());
-
-  const popupInfo = body.querySelector(`.form-details__top-container`);
-  render(popupInfo, getFilmDetailsTemplate(films[0]));
-
-  const popupDetailBlock = body.querySelector(`.film-details__comments-list`);
-  const popupCloseButton = body.querySelector(`.film-details__close-btn`);
-  const popup = body.querySelector(`.film-details`);
-
-  render(popupDetailBlock, comments.map(getFilmCommentsTemplate).join(``));
-
-
-  const onPopupCloseButtonClick = () => {
-    popup.remove();
+  const onEscKeyDown = () => {
+    if (isEscapeKey) {
+      place.replaceChild(filmElement, filmDetailsElement);
+      document.removeEventListener(`keydown`, onEscKeyDown);
+    }
   };
 
-  popupCloseButton.addEventListener(`click`, onPopupCloseButtonClick);
+  filmElement
+    .querySelectorAll(`.film-card__comments, .film-card__poster, .film-card__title`)
+    .forEach(
+        (element) => {
+          element.addEventListener(`click`, () => {
+            place.replaceChild(filmDetailsElement, filmElement);
+            document.addEventListener(`keydown`, onEscKeyDown);
+          });
+        }
+    );
+
+  filmDetailsElementTextarea
+    .addEventListener(`focus`, () => {
+      document.removeEventListener(`keydown`, onEscKeyDown);
+    });
+
+  filmDetailsElementTextarea
+    .addEventListener(`blur`, () => {
+      document.addEventListener(`keydown`, onEscKeyDown);
+    });
+
+  filmDetailsElement
+    .querySelector(`.film-details__close-btn`)
+    .addEventListener(`click`, () => {
+      place.replaceChild(filmElement, filmDetailsElement);
+      document.removeEventListener(`keydown`, onEscKeyDown);
+    });
+
+  render(place, filmElement, Position.BEFOREEND);
 };
 
-const commentLink = filmList.querySelector(`.film-card__comments`);
-commentLink.addEventListener(`click`, onCommentLinkClick);
+const filmMocks = new Array(CardDisplay.TOTAL)
+  .fill(``)
+  .map(getData);
 
-// show more
+
+renderAdditionFilmCards(filmAllList, filmMocks, cardStat.quantityCounter, getTaskQuantityParam());
+
+// SHOW MORE BUTTON
 
 if (cardStat.leftToShow > 0) {
-  render(filmList, getShomMoreButtonTemplate());
+  render(filmList, new ShowMoreButton().getElement(), Position.BEFOREEND);
 
   const onShowMoreButtonClick = () => {
-    renderCards(filmAllList, cardStat.quantityCounter, cardStat.quantityCounter + getTaskQuantityParam());
+    renderAdditionFilmCards(filmAllList, filmMocks, cardStat.quantityCounter, cardStat.quantityCounter + getTaskQuantityParam());
 
     if (cardStat.leftToShow === 0) {
-      showMoreButton.remove();
+      unrender(showMoreButton);
     }
   };
 
@@ -95,16 +139,16 @@ if (cardStat.leftToShow > 0) {
   showMoreButton.addEventListener(`click`, onShowMoreButtonClick, {once: true});
 }
 
-// top rated
+// TOP RATED BLOCK
+// TODO: пока что у top rated и most commented простая сортировка без дополнительных условий, позже доделаю в соответствие с ТХ
 
 const filmTopRatedList = document.querySelector(`.films-list__container--top-rated`);
-const topRatedCards = films.sort((a, b) => b.raiting - a.raiting);
-renderCards(topRatedCards, filmTopRatedList, 0, TOP_COUNT);
+const topRatedCards = filmMocks.sort((a, b) => b.raiting - a.raiting);
 
-// most commented
+renderAdditionFilmCards(filmTopRatedList, topRatedCards, 0, TOP_COUNT);
+
+// MOST COMMENTED BLOCK
 
 const filmMostCommentedList = document.querySelector(`.films-list__container--most-commented`);
-const mostCommentedCards = films.sort((a, b) => b.totalComments - a.totalComments);
-renderCards(mostCommentedCards, filmMostCommentedList, 0, TOP_COUNT);
-
-// TODO: пока что у top rated и most commented простая сортировка без дополнительных условий, позже доделаю в соответствие с ТХ
+const mostCommentedCards = filmMocks.sort((a, b) => b.comments.length - a.comments.length);
+renderAdditionFilmCards(filmMostCommentedList, mostCommentedCards, 0, TOP_COUNT);
