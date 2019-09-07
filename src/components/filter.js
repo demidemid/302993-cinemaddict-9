@@ -1,21 +1,14 @@
-import {createElement} from "../utils";
+import AbstractComponent from "./absctract-component";
 
 const createUrlAnchor = (name) => `#` + name.toLowerCase();
 const normalizeName = (name) => name === `All` ? `All Movies` : name;
 
-export default class Filter {
+export default class Filter extends AbstractComponent {
   constructor({name, count = 0}) {
+    super();
     this._name = name;
     this._count = count;
     this._element = null;
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
   }
 
   getTemplate() {
