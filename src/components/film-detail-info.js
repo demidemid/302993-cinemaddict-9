@@ -1,7 +1,7 @@
 import {DESCRIPTION, CREDITS} from '../data/data';
 import AbstractComponent from './absctract-component';
 
-export default class FilmDetails extends AbstractComponent {
+export default class FilmDetailInfo extends AbstractComponent {
   constructor({title, imageFileName, raiting, credits, duration, genres, comments}) {
     super();
     this._title = title;

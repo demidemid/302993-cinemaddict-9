@@ -1,12 +1,12 @@
 import {CardDisplay} from './data/enums';
 import {getData} from "./data/mock";
-import PageController from './components/page-controller';
+import PageController from './controllers/page-controller';
 
-const body = document.querySelector(`body`);
+const bodyElement = document.querySelector(`body`);
 
 const filmMocks = new Array(CardDisplay.TOTAL)
   .fill(``)
   .map(getData);
 
-const pageController = new PageController(body, filmMocks);
+const pageController = new PageController(bodyElement, filmMocks);
 pageController.init();

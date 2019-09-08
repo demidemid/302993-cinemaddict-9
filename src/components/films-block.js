@@ -4,7 +4,6 @@ export default class FilmsBlock extends AbstractComponent {
   constructor(notEmpty) {
     super();
     this._notEmpty = notEmpty;
-    this._element = null;
   }
 
   getTemplate() {

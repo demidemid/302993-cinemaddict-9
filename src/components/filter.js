@@ -8,7 +8,6 @@ export default class Filter extends AbstractComponent {
     super();
     this._name = name;
     this._count = count;
-    this._element = null;
   }
 
   getTemplate() {

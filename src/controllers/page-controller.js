@@ -3,12 +3,12 @@ import {
   Search,
   UserProfile,
   MainNavigation,
-  SortFilms,
+  Sort,
   FilmCard,
-  FilmDetails,
+  FilmDetailInfo,
   Filter,
   ShowMoreButton,
-} from "../components/";
+} from "../components";
 
 import {render, unrender, Position, isEscapeKey} from "../utils";
 import {CardDisplay} from "../data/enums";
@@ -32,61 +32,77 @@ export default class PageController {
     this._search = new Search();
     this._userProfile = new UserProfile();
     this._mainNavigation = new MainNavigation();
-    this._sortFilms = new SortFilms();
-    this._board = new FilmsBlock();
+    this._sortFilms = new Sort();
     this._showMoreButton = new ShowMoreButton();
   }
 
   init() {
-    const HEADER = this._container.querySelector(`.header`);
-    const MAIN = this._container.querySelector(`.main`);
+    this._renderHeader();
+    this._renderMainMenu();
+    this._renderMainFilmContent();
+    this._renderTopRatedFilmContent();
+    this._renderMostCommentedFilmContent();
+  }
 
+  _renderHeader() {
+    const headerElement = this._container.querySelector(`.header`);
+
+    render(headerElement, this._search.getElement(), Position.BEFOREEND);
+    render(headerElement, this._userProfile.getElement(), Position.BEFOREEND);
+  }
+
+  _renderMainMenu() {
     const notEmpty = CardDisplay.TOTAL > 0;
+    const mainElement = this._container.querySelector(`.main`);
 
-    render(HEADER, this._search.getElement(), Position.BEFOREEND);
-    render(HEADER, this._userProfile.getElement(), Position.BEFOREEND);
-    render(MAIN, this._mainNavigation.getElement(), Position.BEFOREEND);
-    render(MAIN, this._sortFilms.getElement(), Position.BEFOREEND);
-    render(MAIN, new FilmsBlock(notEmpty).getElement(), Position.BEFOREEND);
+    render(mainElement, this._mainNavigation.getElement(), Position.BEFOREEND);
+    render(mainElement, this._sortFilms.getElement(), Position.BEFOREEND);
+    render(mainElement, new FilmsBlock(notEmpty).getElement(), Position.BEFOREEND);
 
-    const MAIN_NAVIGATION = MAIN.querySelector(`.main-navigation`);
+    const mainNavigationElement = this._container.querySelector(`.main-navigation`);
 
     const renderFilter = (filterMock) => {
-      render(MAIN_NAVIGATION, new Filter(filterMock).getElement(), Position.AFTERBEGIN);
+      render(mainNavigationElement, new Filter(filterMock).getElement(), Position.AFTERBEGIN);
     };
 
     filterElements.reverse().forEach(renderFilter);
+  }
 
-    const FILM_LIST = MAIN.querySelector(`.films-list`);
-    const ALL_FILMS_BLOCK = MAIN.querySelector(`.films-list__container--main`);
-    const TOP_RATED_BLOCK = MAIN.querySelector(`.films-list__container--top-rated`);
-    const MOST_COMMENTED_BLOCK = MAIN.querySelector(`.films-list__container--most-commented`);
+  _renderMainFilmContent() {
+    const filmListElement = this._container.querySelector(`.films-list`);
+    const allFilmsElement = this._container.querySelector(`.films-list__container--main`);
 
-    this._renderAdditionFilmCards(ALL_FILMS_BLOCK, this._filmCards, cardStat.quantityCounter, this._getTaskQuantityParam());
+    this._renderAdditionFilmCards(allFilmsElement, this._filmCards, cardStat.quantityCounter, this._getTaskQuantityParam());
 
     if (cardStat.leftToShow > 0) {
-      render(FILM_LIST, this._showMoreButton.getElement(), Position.BEFOREEND);
+      render(filmListElement, this._showMoreButton.getElement(), Position.BEFOREEND);
 
       const onShowMoreButtonClick = () => {
-        this._renderAdditionFilmCards(ALL_FILMS_BLOCK, this._filmCards, cardStat.quantityCounter, cardStat.quantityCounter + this._getTaskQuantityParam());
+        this._renderAdditionFilmCards(allFilmsElement, this._filmCards, cardStat.quantityCounter, cardStat.quantityCounter + this._getTaskQuantityParam());
 
         if (cardStat.leftToShow === 0) {
-          unrender(SHOW_MORE_BUTTON);
+          unrender(showMoreButtonElement);
         }
       };
 
-      const SHOW_MORE_BUTTON = FILM_LIST.querySelector(`.films-list__show-more`);
-      SHOW_MORE_BUTTON.addEventListener(`click`, onShowMoreButtonClick, {once: true});
+      const showMoreButtonElement = filmListElement.querySelector(`.films-list__show-more`);
+      showMoreButtonElement.addEventListener(`click`, onShowMoreButtonClick, {once: true});
     }
+  }
 
-    // TOP RATED BLOCK
+  _renderTopRatedFilmContent() {
+    const topRatedFilmsElement = this._container.querySelector(`.films-list__container--top-rated`);
+
     // TODO: пока что у top rated и most commented простая сортировка без дополнительных условий, позже доделаю в соответствие с ТХ
     const topRatedCards = this._filmCards.sort((a, b) => b.raiting - a.raiting);
-    this._renderAdditionFilmCards(TOP_RATED_BLOCK, topRatedCards, 0, TOP_COUNT);
+    this._renderAdditionFilmCards(topRatedFilmsElement, topRatedCards, 0, TOP_COUNT);
+  }
 
-    // MOST COMMENTED BLOCK
+  _renderMostCommentedFilmContent() {
+    const mostCommentedFilmsElement = this._container.querySelector(`.films-list__container--most-commented`);
+
     const mostCommentedCards = this._filmCards.sort((a, b) => b.comments.length - a.comments.length);
-    this._renderAdditionFilmCards(MOST_COMMENTED_BLOCK, mostCommentedCards, 0, TOP_COUNT);
+    this._renderAdditionFilmCards(mostCommentedFilmsElement, mostCommentedCards, 0, TOP_COUNT);
   }
 
   _renderAdditionFilmCards(place, arr, start, end) {
@@ -94,7 +110,7 @@ export default class PageController {
   }
 
   _getTaskQuantityParam() {
-    let quantity = cardStat.leftToShow > CardDisplay.PER_PAGE ? CardDisplay.PER_PAGE : cardStat.leftToShow;
+    const quantity = cardStat.leftToShow > CardDisplay.PER_PAGE ? CardDisplay.PER_PAGE : cardStat.leftToShow;
 
     cardStat.updateTaskStat(quantity);
     return quantity;
@@ -102,10 +118,10 @@ export default class PageController {
 
   _renderFilms(place, filmMock) {
     const film = new FilmCard(filmMock);
-    const filmDetails = new FilmDetails(filmMock);
+    const filmDetails = new FilmDetailInfo(filmMock);
     const filmElement = film.getElement();
     const filmDetailsElement = filmDetails.getElement();
-    const filmDetailsElementTextarea = filmDetailsElement.querySelector(`textarea`);
+    const filmDetailsTextareaElement = filmDetailsElement.querySelector(`textarea`);
 
     const onEscKeyDown = () => {
       if (isEscapeKey) {
@@ -125,12 +141,12 @@ export default class PageController {
           }
       );
 
-    filmDetailsElementTextarea
+    filmDetailsTextareaElement
       .addEventListener(`focus`, () => {
         document.removeEventListener(`keydown`, onEscKeyDown);
       });
 
-    filmDetailsElementTextarea
+    filmDetailsTextareaElement
       .addEventListener(`blur`, () => {
         document.addEventListener(`keydown`, onEscKeyDown);
       });

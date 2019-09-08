@@ -3,10 +3,10 @@ import MainNavigation from './main-navigation';
 import Filter from './filter';
 import FilmsBlock from './films-block';
 import UserProfile from './user-profile';
-import SortFilms from './sort';
+import Sort from './sort';
 import ShowMoreButton from './show-more';
 import FilmCard from './film-card';
-import FilmDetails from './film-details';
+import FilmDetailInfo from './film-detail-info';
 
 export {
   Search,
@@ -14,8 +14,8 @@ export {
   Filter,
   FilmsBlock,
   UserProfile,
-  SortFilms,
+  Sort,
   ShowMoreButton,
   FilmCard,
-  FilmDetails,
+  FilmDetailInfo,
 };

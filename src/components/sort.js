@@ -1,10 +1,6 @@
 import AbstractComponent from "./absctract-component";
 
-export default class SortFilms extends AbstractComponent {
-  constructor() {
-    super();
-  }
-
+export default class Sort extends AbstractComponent {
   getTemplate() {
     return `
     <ul class="sort">

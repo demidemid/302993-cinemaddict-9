@@ -1,10 +1,6 @@
 import AbstractComponent from "./absctract-component";
 
 export default class UserProfile extends AbstractComponent {
-  constructor() {
-    super();
-  }
-
   getTemplate() {
     return `
     <section class="header__profile profile">
