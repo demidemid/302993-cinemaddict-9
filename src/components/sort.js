@@ -1,18 +1,6 @@
-import {createElement} from "../utils";
+import AbstractComponent from "./absctract-component";
 
-export default class SortFilms {
-  constructor() {
-    this._element = null;
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
+export default class Sort extends AbstractComponent {
   getTemplate() {
     return `
     <ul class="sort">

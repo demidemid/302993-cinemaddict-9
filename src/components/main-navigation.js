@@ -1,18 +1,6 @@
-import {createElement} from "../utils";
+import AbstractComponent from "./absctract-component";
 
-export default class MainNavigation {
-  constructor() {
-    this._element = null;
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
+export default class MainNavigation extends AbstractComponent {
   getTemplate() {
     return `
     <nav class="main-navigation">

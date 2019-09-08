@@ -1,24 +1,16 @@
 import {DESCRIPTION, CREDITS} from '../data/data';
-import {createElement} from "../utils";
+import AbstractComponent from './absctract-component';
 
-export default class FilmDetails {
+export default class FilmDetailInfo extends AbstractComponent {
   constructor({title, imageFileName, raiting, credits, duration, genres, comments}) {
+    super();
     this._title = title;
     this._imageFileName = imageFileName;
     this._raiting = raiting;
     this._credits = credits;
     this._duration = duration;
     this._genres = genres;
-    this._element = null;
     this._comments = comments;
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
   }
 
   getTemplate() {

@@ -33,7 +33,7 @@ export const render = (container, element, place) => {
 };
 
 export const unrender = (element) => {
-  if (element) {
+  if (element !== null) {
     element.remove();
   }
 };

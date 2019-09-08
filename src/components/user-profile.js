@@ -1,18 +1,6 @@
-import {createElement} from "../utils";
+import AbstractComponent from "./absctract-component";
 
-export default class UserProfile {
-  constructor() {
-    this._element = null;
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
+export default class UserProfile extends AbstractComponent {
   getTemplate() {
     return `
     <section class="header__profile profile">
