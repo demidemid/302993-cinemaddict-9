@@ -7,6 +7,7 @@ import Sort from './sort';
 import ShowMoreButton from './show-more';
 import FilmCard from './film-card';
 import FilmDetailInfo from './film-detail-info';
+import FooterFilmCounter from './footer-film-counter';
 
 export {
   Search,
@@ -18,4 +19,5 @@ export {
   ShowMoreButton,
   FilmCard,
   FilmDetailInfo,
+  FooterFilmCounter,
 };
