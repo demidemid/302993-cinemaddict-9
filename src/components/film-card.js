@@ -1,4 +1,5 @@
 import AbstractComponent from './absctract-component';
+import {getPluralOfWord} from '../utils';
 
 export default class FilmCard extends AbstractComponent {
   constructor({title, imageFileName, raiting, year, duration, genres, description, comments}) {
@@ -25,7 +26,7 @@ export default class FilmCard extends AbstractComponent {
       </p>
       <img src="./images/posters/${this._imageFileName.trim()}" alt="" class="film-card__poster">
       <p class="film-card__description">${Array.from(this._description).join(` `)}</p>
-      <a class="film-card__comments">${this._comments.length} ${this._comments.lenght === 1 ? `comment` : `comments`}</a>
+      <a class="film-card__comments">${this._comments.length} ${getPluralOfWord(this._comments.length, [`comment`, `comments`])}</a>
       <form class="film-card__controls">
         <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist">Add to watchlist</button>
         <button class="film-card__controls-item button film-card__controls-item--mark-as-watched  film-card__controls-item--active">Mark as watched</button>

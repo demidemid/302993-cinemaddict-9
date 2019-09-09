@@ -1,4 +1,5 @@
 import {DESCRIPTION, CREDITS} from '../data/data';
+import {getPluralOfWord} from '../utils';
 import AbstractComponent from './absctract-component';
 
 export default class FilmDetailInfo extends AbstractComponent {
@@ -85,7 +86,7 @@ export default class FilmDetailInfo extends AbstractComponent {
       </div>
       <div class="form-details__bottom-container">
         <div class="film-details__comments-wrap">
-          <h3 class="film-details__comments-title">${this._comments.length === 1 ? `Comment` : `Comments`}
+          <h3 class="film-details__comments-title">${getPluralOfWord(this._comments.length, [`Comment`, `Comments`])}
             <span class="film-details__comments-count">${this._comments.length}</span></h3>
           <ul class="film-details__comments-list">
             ${Array.from(this._comments).map(({iconReactionImage, commentTexts, userName, date}) => `

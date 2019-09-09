@@ -45,3 +45,7 @@ const Key = {
 
 export const isEscapeKey = ({key}) =>
   key === Key.ESCAPE || key === Key.ESCAPE_IE;
+
+export const getPluralOfWord = (number, arr) => {
+  return number === 1 ? arr[0] : arr[1];
+};
