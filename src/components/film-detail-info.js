@@ -2,6 +2,8 @@ import {DESCRIPTION, CREDITS} from '../data/data';
 import {getPluralOfWord} from '../utils';
 import AbstractComponent from './absctract-component';
 
+const cutFileResolution = (name) => name.slice(0, name.indexOf(`.`));
+
 export default class FilmDetailInfo extends AbstractComponent {
   constructor({title, imageFileName, raiting, credits, duration, genres, comments}) {
     super();
@@ -107,7 +109,9 @@ export default class FilmDetailInfo extends AbstractComponent {
           </ul>
 
           <div class="film-details__new-comment">
-            <div for="add-emoji" class="film-details__add-emoji-label"></div>
+            <div for="add-emoji" class="film-details__add-emoji-label">
+              <img src="images/emoji/smile.png" width="55" height="55" alt="emoji">
+            </div>
 
             <label class="film-details__comment-label">
               <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here"
@@ -116,9 +120,9 @@ export default class FilmDetailInfo extends AbstractComponent {
 
             <div class="film-details__emoji-list">
               ${CREDITS.iconReactionImage.map((file) => `
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile"
-                value="sleeping">
-              <label class="film-details__emoji-label" for="emoji-smile">
+              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${cutFileResolution(file)}"
+                value="${cutFileResolution(file)}" ${file === `smile.png` ? `checked` : ``}>
+              <label class="film-details__emoji-label" for="emoji-${cutFileResolution(file)}">
                 <img src="./images/emoji/${file}" width="30" height="30" alt="emoji">
               </label>
               `).join(``)}

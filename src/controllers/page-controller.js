@@ -11,7 +11,7 @@ import {
   FooterFilmCounter,
 } from "../components";
 
-import {render, unrender, Position, isEscapeKey} from "../utils";
+import {render, unrender, Position, isEscapeKey, isCtrlEnter} from "../utils";
 import {CardDisplay} from "../data/enums";
 import {TOP_COUNT} from "../data/consts";
 import {films, filterElements} from "../data/mock";
@@ -186,6 +186,27 @@ export default class PageController {
       .addEventListener(`click`, () => {
         place.replaceChild(filmElement, filmDetailsElement);
         document.removeEventListener(`keydown`, onEscKeyDown);
+      });
+
+    filmDetailsTextareaElement
+      .addEventListener(`keydown`, (event) => {
+
+        if (isCtrlEnter(event)) {
+
+          const formData = new FormData(filmDetailsElement.querySelector(`.film-details__new-comment`));
+          const entry = {
+            iconReactionImage: formData.get(`comment-emoji`),
+            date: Date.now(),
+            commentTexts: formData.get(`comment`),
+          };
+
+          // console.log(`entry`, entry);
+
+          this._filmCards[this._filmCards.findIndex()] = entry;
+        }
+
+        document.removeEventListener(`keydown`, onEscKeyDown);
+
       });
 
     render(place, filmElement, Position.BEFOREEND);
