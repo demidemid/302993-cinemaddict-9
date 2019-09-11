@@ -99,8 +99,8 @@ export default class PageController {
     this._renderAdditionFilmCards(mostCommentedFilmsElement, mostCommentedCards, 0, TOP_COUNT);
   }
 
-  _renderAdditionFilmCards(place, arr, start, end) {
-    arr.slice(start, end).forEach((filmMock) => this._renderFilms(place, filmMock));
+  _renderAdditionFilmCards(container, arr, start, end) {
+    arr.slice(start, end).forEach((filmMock) => this._renderFilms(container, filmMock));
   }
 
   _onSortLinkClick(evt) {
@@ -161,8 +161,8 @@ export default class PageController {
     this._renderAdditionFilmCards(allFilmsElement, this._filmCards, cardStat.quantityCounter, this._getTaskQuantityParam());
   }
 
-  _renderFilms(place, filmMock) {
-    const movieController = new MovieController(filmMock, this._onDataChange, this._onChangeView);
+  _renderFilms(container, filmMock) {
+    const movieController = new MovieController(container, filmMock, this._onDataChange, this._onChangeView);
     this._subscriptions.push(movieController.setDefaultView.bind(movieController));
   }
 
