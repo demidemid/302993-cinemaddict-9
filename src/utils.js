@@ -47,8 +47,8 @@ const Key = {
 export const isEscapeKey = ({key}) =>
   key === Key.ESCAPE || key === Key.ESCAPE_IE;
 
-export const isCtrlEnter = (event) =>
-  event.ctrlKey && event.key === Key.ENTER;
+export const isCtrlEnter = (evt) =>
+  evt.ctrlKey && evt.key === Key.ENTER;
 
 export const getPluralOfWord = (number, arr) => {
   return number === 1 ? arr[0] : arr[1];

@@ -4,17 +4,16 @@ import {
   UserProfile,
   MainNavigation,
   Sort,
-  FilmCard,
-  FilmDetailInfo,
   Filter,
   ShowMoreButton,
   FooterFilmCounter,
 } from "../components";
 
-import {render, unrender, Position, isEscapeKey, isCtrlEnter} from "../utils";
+import {render, unrender, Position} from "../utils";
 import {CardDisplay} from "../data/enums";
 import {TOP_COUNT} from "../data/consts";
 import {films, filterElements} from "../data/mock";
+import MovieController from "./movie-controller";
 
 const cardStat = {
   quantityCounter: 0,
@@ -36,6 +35,10 @@ export default class PageController {
     this._sort = new Sort();
     this._showMoreButton = new ShowMoreButton();
     this._footerFilmCounter = new FooterFilmCounter();
+
+    this._subscriptions = [];
+    this._onChangeView = this._onChangeView.bind(this);
+    this._onDataChange = this._onDataChange.bind(this);
   }
 
   init() {
@@ -146,70 +149,21 @@ export default class PageController {
     return quantity;
   }
 
+  _onChangeView() {
+    this._subscriptions.forEach((it) => it());
+  }
+
+  _onDataChange(newData, oldData) {
+    const allFilmsElement = this._container.querySelector(`.films-list__container--main`);
+
+    this._filmCards[this._filmCards.findIndex((it) => it === oldData)] = newData;
+
+    this._renderAdditionFilmCards(allFilmsElement, this._filmCards, cardStat.quantityCounter, this._getTaskQuantityParam());
+  }
+
   _renderFilms(place, filmMock) {
-    const film = new FilmCard(filmMock);
-    const filmDetails = new FilmDetailInfo(filmMock);
-    const filmElement = film.getElement();
-    const filmDetailsElement = filmDetails.getElement();
-    const filmDetailsTextareaElement = filmDetailsElement.querySelector(`textarea`);
-
-    const onEscKeyDown = () => {
-      if (isEscapeKey) {
-        place.replaceChild(filmElement, filmDetailsElement);
-        document.removeEventListener(`keydown`, onEscKeyDown);
-      }
-    };
-
-    filmElement
-      .querySelectorAll(`.film-card__comments, .film-card__poster, .film-card__title`)
-      .forEach(
-          (element) => {
-            element.addEventListener(`click`, () => {
-              place.replaceChild(filmDetailsElement, filmElement);
-              document.addEventListener(`keydown`, onEscKeyDown);
-            });
-          }
-      );
-
-    filmDetailsTextareaElement
-      .addEventListener(`focus`, () => {
-        document.removeEventListener(`keydown`, onEscKeyDown);
-      });
-
-    filmDetailsTextareaElement
-      .addEventListener(`blur`, () => {
-        document.addEventListener(`keydown`, onEscKeyDown);
-      });
-
-    filmDetailsElement
-      .querySelector(`.film-details__close-btn`)
-      .addEventListener(`click`, () => {
-        place.replaceChild(filmElement, filmDetailsElement);
-        document.removeEventListener(`keydown`, onEscKeyDown);
-      });
-
-    filmDetailsTextareaElement
-      .addEventListener(`keydown`, (event) => {
-
-        if (isCtrlEnter(event)) {
-
-          const formData = new FormData(filmDetailsElement.querySelector(`.film-details__new-comment`));
-          const entry = {
-            iconReactionImage: formData.get(`comment-emoji`),
-            date: Date.now(),
-            commentTexts: formData.get(`comment`),
-          };
-
-          // console.log(`entry`, entry);
-
-          this._filmCards[this._filmCards.findIndex()] = entry;
-        }
-
-        document.removeEventListener(`keydown`, onEscKeyDown);
-
-      });
-
-    render(place, filmElement, Position.BEFOREEND);
+    const movieController = new MovieController(filmMock, this._onDataChange, this._onChangeView);
+    this._subscriptions.push(movieController.setDefaultView.bind(movieController));
   }
 
   _renderShowMoreButtonElement(arr) {
