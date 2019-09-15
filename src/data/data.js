@@ -67,7 +67,7 @@ export const DESCRIPTION = [
   `In rutrum ac purus sit amet tempus.`,
 ];
 
-export const CREDITS = {
+export const FILM_INFO = {
   names: [
     `Anthony Mann`,
     `Anne Wigton`,
@@ -90,7 +90,7 @@ export const CREDITS = {
     `18+`,
     `21+`,
   ],
-  iconReactionImage: [
+  emotion: [
     `smile.png`,
     `sleeping.png`,
     `puke.png`,

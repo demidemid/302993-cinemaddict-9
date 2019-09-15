@@ -88,7 +88,7 @@ export default class PageController {
     const topRatedFilmsElement = this._container.querySelector(`.films-list__container--top-rated`);
 
     // TODO: пока что у top rated и most commented простая сортировка без дополнительных условий, позже доделаю в соответствие с ТХ
-    const topRatedCards = this._filmCards.sort((a, b) => b.raiting - a.raiting);
+    const topRatedCards = this._filmCards.sort((a, b) => b.totalRaiting - a.totalRaiting);
     this._renderAdditionFilmCards(topRatedFilmsElement, topRatedCards, 0, TOP_COUNT);
   }
 
@@ -127,12 +127,15 @@ export default class PageController {
 
     switch (evt.target.dataset.sortType) {
       case `date`:
-        const sortedByDateFilms = this._filmCards.slice().sort((a, b) => b.year - a.year);
+        const sortedByDateFilms = this._filmCards.slice().sort((a, b) => b.filmInfo.release.date - a.filmInfo.release.date);
+        sortedByDateFilms.forEach((filmInfo) => {
+          console.log(`sortedByDateFilms`, filmInfo.filmInfo.release.date);
+        });
         this._renderAdditionFilmCards(allFilmsElement, sortedByDateFilms, cardStat.quantityCounter, this._getTaskQuantityParam());
         this._renderShowMoreButtonElement(sortedByDateFilms);
         break;
       case `rating`:
-        const sortedByRatingFilms = this._filmCards.sort((a, b) => b.raiting - a.raiting);
+        const sortedByRatingFilms = this._filmCards.sort((a, b) => b.totalRaiting - a.totalRaiting);
         this._renderAdditionFilmCards(allFilmsElement, sortedByRatingFilms, cardStat.quantityCounter, this._getTaskQuantityParam());
         this._renderShowMoreButtonElement(sortedByRatingFilms);
         break;
@@ -155,8 +158,9 @@ export default class PageController {
 
   _onDataChange(newData, oldData) {
     const allFilmsElement = this._container.querySelector(`.films-list__container--main`);
-
+    console.log(`this._filmCards`, this._filmCards);
     this._filmCards[this._filmCards.findIndex((it) => it === oldData)] = newData;
+    console.log(`this._filmCards`, this._filmCards);
 
     this._renderAdditionFilmCards(allFilmsElement, this._filmCards, cardStat.quantityCounter, this._getTaskQuantityParam());
   }
