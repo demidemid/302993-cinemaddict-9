@@ -1,4 +1,4 @@
-import AbstractComponent from "./absctract-component";
+import AbstractComponent from "./abstract-component";
 
 const createUrlAnchor = (name) => `#` + name.toLowerCase();
 const normalizeName = (name) => name === `All` ? `All Movies` : name;

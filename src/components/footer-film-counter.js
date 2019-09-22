@@ -1,4 +1,4 @@
-import AbstractComponent from "./absctract-component";
+import AbstractComponent from "./abstract-component";
 import {CardDisplay} from "../data/enums";
 import {getPluralOfWord} from "../utils";
 

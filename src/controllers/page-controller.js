@@ -4,17 +4,16 @@ import {
   UserProfile,
   MainNavigation,
   Sort,
-  FilmCard,
-  FilmDetailInfo,
   Filter,
   ShowMoreButton,
   FooterFilmCounter,
 } from "../components";
 
-import {render, unrender, Position, isEscapeKey} from "../utils";
+import {render, unrender, Position} from "../utils";
 import {CardDisplay} from "../data/enums";
 import {TOP_COUNT} from "../data/consts";
 import {films, filterElements} from "../data/mock";
+import MovieController from "./movie-controller";
 
 const cardStat = {
   quantityCounter: 0,
@@ -36,6 +35,10 @@ export default class PageController {
     this._sort = new Sort();
     this._showMoreButton = new ShowMoreButton();
     this._footerFilmCounter = new FooterFilmCounter();
+
+    this._subscriptions = [];
+    this._onChangeView = this._onChangeView.bind(this);
+    this._onDataChange = this._onDataChange.bind(this);
   }
 
   init() {
@@ -85,7 +88,7 @@ export default class PageController {
     const topRatedFilmsElement = this._container.querySelector(`.films-list__container--top-rated`);
 
     // TODO: пока что у top rated и most commented простая сортировка без дополнительных условий, позже доделаю в соответствие с ТХ
-    const topRatedCards = this._filmCards.sort((a, b) => b.raiting - a.raiting);
+    const topRatedCards = this._filmCards.sort((a, b) => b.filmInfo.totalRaiting - a.filmInfo.totalRaiting);
     this._renderAdditionFilmCards(topRatedFilmsElement, topRatedCards, 0, TOP_COUNT);
   }
 
@@ -96,8 +99,8 @@ export default class PageController {
     this._renderAdditionFilmCards(mostCommentedFilmsElement, mostCommentedCards, 0, TOP_COUNT);
   }
 
-  _renderAdditionFilmCards(place, arr, start, end) {
-    arr.slice(start, end).forEach((filmMock) => this._renderFilms(place, filmMock));
+  _renderAdditionFilmCards(container, arr, start, end) {
+    arr.slice(start, end).forEach((filmMock) => this._renderFilms(container, filmMock));
   }
 
   _onSortLinkClick(evt) {
@@ -124,12 +127,15 @@ export default class PageController {
 
     switch (evt.target.dataset.sortType) {
       case `date`:
-        const sortedByDateFilms = this._filmCards.slice().sort((a, b) => b.year - a.year);
+        const sortedByDateFilms = this._filmCards.slice().sort((a, b) => b.filmInfo.release.date - a.filmInfo.release.date);
+        sortedByDateFilms.forEach((filmInfo) => {
+          console.log(`sortedByDateFilms`, filmInfo.filmInfo.release.date);
+        });
         this._renderAdditionFilmCards(allFilmsElement, sortedByDateFilms, cardStat.quantityCounter, this._getTaskQuantityParam());
         this._renderShowMoreButtonElement(sortedByDateFilms);
         break;
       case `rating`:
-        const sortedByRatingFilms = this._filmCards.sort((a, b) => b.raiting - a.raiting);
+        const sortedByRatingFilms = this._filmCards.sort((a, b) => b.filmInfo.totalRaiting - a.filmInfo.totalRaiting);
         this._renderAdditionFilmCards(allFilmsElement, sortedByRatingFilms, cardStat.quantityCounter, this._getTaskQuantityParam());
         this._renderShowMoreButtonElement(sortedByRatingFilms);
         break;
@@ -146,52 +152,36 @@ export default class PageController {
     return quantity;
   }
 
-  _renderFilms(place, filmMock) {
-    const film = new FilmCard(filmMock);
-    const filmDetails = new FilmDetailInfo(filmMock);
-    const filmElement = film.getElement();
-    const filmDetailsElement = filmDetails.getElement();
-    const filmDetailsTextareaElement = filmDetailsElement.querySelector(`textarea`);
+  _onChangeView() {
+    this._subscriptions.forEach((it) => it());
+  }
 
-    const onEscKeyDown = () => {
-      if (isEscapeKey) {
-        place.replaceChild(filmElement, filmDetailsElement);
-        document.removeEventListener(`keydown`, onEscKeyDown);
-      }
-    };
+  _onDataChange(newData, oldData) {
+    const allFilmsElement = this._container.querySelector(`.films-list__container--main`);
+    allFilmsElement.innerHTML = ``;
 
-    filmElement
-      .querySelectorAll(`.film-card__comments, .film-card__poster, .film-card__title`)
-      .forEach(
-          (element) => {
-            element.addEventListener(`click`, () => {
-              place.replaceChild(filmDetailsElement, filmElement);
-              document.addEventListener(`keydown`, onEscKeyDown);
-            });
-          }
-      );
+    cardStat.quantityCounter = 0;
+    cardStat.leftToShow = films.length;
 
-    filmDetailsTextareaElement
-      .addEventListener(`focus`, () => {
-        document.removeEventListener(`keydown`, onEscKeyDown);
-      });
+    console.log(`this._filmCards ДО`, this._filmCards);
+    this._filmCards[this._filmCards.findIndex((it) => it === oldData)] = newData;
+    console.log(`this._filmCards ПОСЛК`, this._filmCards);
 
-    filmDetailsTextareaElement
-      .addEventListener(`blur`, () => {
-        document.addEventListener(`keydown`, onEscKeyDown);
-      });
+    this._renderAdditionFilmCards(allFilmsElement, this._filmCards, cardStat.quantityCounter, this._getTaskQuantityParam());
+  }
 
-    filmDetailsElement
-      .querySelector(`.film-details__close-btn`)
-      .addEventListener(`click`, () => {
-        place.replaceChild(filmElement, filmDetailsElement);
-        document.removeEventListener(`keydown`, onEscKeyDown);
-      });
-
-    render(place, filmElement, Position.BEFOREEND);
+  _renderFilms(container, filmMock) {
+    const movieController = new MovieController(container, filmMock, this._onDataChange, this._onChangeView);
+    this._subscriptions.push(movieController.setDefaultView.bind(movieController));
   }
 
   _renderShowMoreButtonElement(arr) {
+    // console.log(`------------- _renderShowMoreButtonElement ---------------`);
+    // arr.forEach((filmInfo) => {
+    //   console.log(`sortedByDateFilms`, filmInfo.filmInfo.release.date);
+    // });
+    // console.log(`----------------------------`);
+
     const filmListElement = this._container.querySelector(`.films-list`);
     const allFilmsElement = this._container.querySelector(`.films-list__container--main`);
 
@@ -199,6 +189,11 @@ export default class PageController {
       render(filmListElement, this._showMoreButton.getElement(), Position.BEFOREEND);
 
       const onShowMoreButtonClick = () => {
+        // console.log(`------------- onShowMoreButtonClick ---------------`);
+        // arr.forEach((filmInfo) => {
+        //    console.log(`sortedByDateFilms`, filmInfo.filmInfo.release.date);
+        // });
+        // console.log(`----------------------------`);
         this._renderAdditionFilmCards(allFilmsElement, arr, cardStat.quantityCounter, cardStat.quantityCounter + this._getTaskQuantityParam());
 
         if (cardStat.leftToShow === 0) {
