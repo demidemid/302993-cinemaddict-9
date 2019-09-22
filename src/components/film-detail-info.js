@@ -5,11 +5,9 @@ import AbstractComponent from './abstract-component';
 const cutFileResolution = (name) => name.slice(0, name.indexOf(`.`));
 
 export default class FilmDetailInfo extends AbstractComponent {
-  constructor({totalRaiting, filmInfo, runtime, comments, userDetails}) {
+  constructor({filmInfo, comments, userDetails}) {
     super();
-    this._totalRaiting = totalRaiting;
     this._filmInfo = filmInfo;
-    this._duration = runtime;
     this._comments = comments;
     this._userDetails = userDetails;
   }
@@ -25,16 +23,16 @@ export default class FilmDetailInfo extends AbstractComponent {
       <div class="film-details__info-wrap">
         <div class="film-details__poster">
           <img class="film-details__poster-img" src="./images/posters/${this._filmInfo.poster}" alt="">
-          <p class="film-details__age">${this._filmInfo.ageRaiting}</p>
+          <p class="film-details__age">${this._filmInfo.ageRating}</p>
         </div>
         <div class="film-details__info">
           <div class="film-details__info-head">
             <div class="film-details__title-wrap">
-              <h3 class="film-details__title">${this._filmInfo.alternativeTitle}</h3>
+              <h3 class="film-details__title">${this._filmInfo.title}</h3>
               <p class="film-details__title-original">Original: ${this._filmInfo.title}</p>
             </div>
             <div class="film-details__rating">
-              <p class="film-details__total-rating">${this._totalRaiting}.0</p>
+              <p class="film-details__total-rating">${this._filmInfo.totalRaiting}.0</p>
               ${this._userDetails.isWatched ? `<p class="film-details__user-rating">Your rate ${this._userDetails.personalRaiting}</p>` : ``}
             </div>
           </div>
@@ -57,7 +55,7 @@ export default class FilmDetailInfo extends AbstractComponent {
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Runtime</td>
-              <td class="film-details__cell">${this._duration}</td>
+              <td class="film-details__cell">${this._filmInfo.runtime}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Country</td>
@@ -99,7 +97,7 @@ export default class FilmDetailInfo extends AbstractComponent {
                 </div>
 
                 <section class="film-details__user-rating-inner">
-                    <h3 class="film-details__user-rating-title">The Great Flamarion</h3>
+                    <h3 class="film-details__user-rating-title">${this._filmInfo.title}</h3>
 
                     <p class="film-details__user-rating-feelings">How you feel it?</p>
 

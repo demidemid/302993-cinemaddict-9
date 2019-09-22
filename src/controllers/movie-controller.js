@@ -1,4 +1,4 @@
-import {FilmCard, FilmDetailInfo} from "../components";
+import {FilmCard, FilmDetailInfo, FilmComment} from "../components";
 import {isEscapeKey, isCtrlEnter, Position, render, getRandomItem, unrender} from "../utils";
 import {FILM_INFO} from "../data/data";
 
@@ -16,22 +16,22 @@ export default class MovieController {
 
   _getEntry() {
     return {
-      totalRaiting: this._filmMock.totalRaiting,
-      runtime: this._filmMock.runtime,
       filmInfo: {
         title: this._filmMock.filmInfo.title,
         alternativeTitle: this._filmMock.filmInfo.alternativeTitle,
+        totalRaiting: this._filmMock.filmInfo.totalRaiting,
         poster: this._filmMock.filmInfo.poster,
         description: this._filmMock.filmInfo.description,
         director: this._filmMock.filmInfo.director,
         actors: this._filmMock.filmInfo.actors,
+        runtime: this._filmMock.filmInfo.runtime,
         writers: this._filmMock.filmInfo.writers,
         release: {
           date: this._filmMock.filmInfo.release.date,
           countries: this._filmMock.filmInfo.release.countries,
         },
         genres: this._filmMock.filmInfo.genres,
-        ageRaiting: this._filmMock.filmInfo.ageRaiting,
+        ageRating: this._filmMock.filmInfo.ageRating,
       },
       userDetails: {
         personalRaiting: this._filmMock.userDetails.personalRaiting,
@@ -50,7 +50,7 @@ export default class MovieController {
 
     const onEscKeyDown = () => {
       if (isEscapeKey) {
-        this._container.replaceChild(filmElement, filmDetailsElement);
+        unrender(filmDetailsElement);
         document.removeEventListener(`keydown`, onEscKeyDown);
       }
     };
@@ -61,7 +61,8 @@ export default class MovieController {
           (element) => {
             element.addEventListener(`click`, () => {
               this._onChangeView();
-              this._container.replaceChild(filmDetailsElement, filmElement);
+              const bodyElement = document.querySelector(`body`);
+              render(bodyElement, filmDetailsElement, Position.BEFOREEND);
               document.addEventListener(`keydown`, onEscKeyDown);
             });
           }
@@ -80,7 +81,7 @@ export default class MovieController {
     filmDetailsElement
       .querySelector(`.film-details__close-btn`)
       .addEventListener(`click`, () => {
-        this._container.replaceChild(filmElement, filmDetailsElement);
+        unrender(filmDetailsElement);
         document.removeEventListener(`keydown`, onEscKeyDown);
       });
 
@@ -89,7 +90,7 @@ export default class MovieController {
       .forEach(
           (element) => {
             element.addEventListener(`click`, (evt) => {
-              this._container.querySelector(`.film-details__add-emoji-label img`).src = evt.target.src;
+              filmDetailsElement.querySelector(`.film-details__add-emoji-label img`).src = evt.target.src;
             });
           }
       );
@@ -100,17 +101,19 @@ export default class MovieController {
         if (isCtrlEnter(evt)) {
 
           const entry = this._getEntry();
+          const commentList = filmDetailsElement.querySelector(`.film-details__comments-list`);
           const formData = new FormData(filmDetailsElement.querySelector(`.film-details__inner`));
+
           const entryComment = {
-            emotion: formData.get(`comment-emoji`),
+            emotion: formData.get(`comment-emoji`) + `.png`,
             date: Date.now(),
             commentTexts: formData.get(`comment`),
             userName: getRandomItem(FILM_INFO.userNames),
           };
 
-          // console.log(`entry.comments: `, entry.comments);
           entry.comments.push(entryComment);
-          // console.log(`entry.comments: `, entry.comments);
+
+          render(commentList, new FilmComment(entryComment).getElement(), Position.BEFOREEND);
 
           this._onDataChange(entry, this._filmMock);
         }

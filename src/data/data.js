@@ -82,7 +82,7 @@ export const FILM_INFO = {
     `UK`,
     `Russia`,
   ],
-  ageRaiting: [
+  ageRating: [
     `0+`,
     `6+`,
     `12+`,

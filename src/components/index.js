@@ -7,6 +7,7 @@ import Sort from './sort';
 import ShowMoreButton from './show-more';
 import FilmCard from './film-card';
 import FilmDetailInfo from './film-detail-info';
+import FilmComment from './film-comment';
 import FooterFilmCounter from './footer-film-counter';
 
 export {
@@ -19,5 +20,6 @@ export {
   ShowMoreButton,
   FilmCard,
   FilmDetailInfo,
+  FilmComment,
   FooterFilmCounter,
 };

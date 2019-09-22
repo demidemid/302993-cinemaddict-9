@@ -22,14 +22,14 @@ import {
 } from './data';
 
 export const getData = () => ({
-  totalRaiting: getRandomInt(MovieRaiting.MIN, MovieRaiting.MAX),
-  runtime: getRandomItem(DURATIONS),
   filmInfo: {
     title: getRandomItem(TITLES),
     alternativeTitle: getRandomItem(TITLES),
+    totalRaiting: getRandomInt(MovieRaiting.MIN, MovieRaiting.MAX),
     poster: getRandomItem(IMAGE_FILE_NAMES),
     description: new Set(getRandomlyReducedArray(DESCRIPTION, getRandomInt(ItemCountPerScope.MIN, ItemCountPerScope.MAX))),
     director: getRandomItem(FILM_INFO.names),
+    runtime: getRandomItem(DURATIONS),
     actors: new Set(getRandomlyReducedArray(FILM_INFO.names, getRandomInt(ItemCountPerScope.MIN, ItemCountPerScope.MAX))),
     release: {
       countries: getRandomItem(FILM_INFO.countries),
@@ -37,7 +37,7 @@ export const getData = () => ({
     },
     genres: new Set(getRandomlyReducedArray(GENRES, Math.round(Math.random() * ItemCountPerScope.MAX))),
     writers: new Set(getRandomlyReducedArray(FILM_INFO.names, getRandomInt(ItemCountPerScope.MIN, ItemCountPerScope.MAX))),
-    ageRaiting: getRandomItem(FILM_INFO.ageRaiting),
+    ageRating: getRandomItem(FILM_INFO.ageRating),
   },
   userDetails: {
     intoWatchList: getRandomBool(),
